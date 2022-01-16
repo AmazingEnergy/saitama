@@ -6,6 +6,8 @@ import com.amazingenergy.core.moneytransfer.domain.PaymentHistory;
 import com.amazingenergy.core.moneytransfer.domain.PaymentMethod;
 import com.amazingenergy.core.moneytransfer.view.PaymentRequest;
 import com.amazingenergy.core.publisher.EventPublisher;
+import com.amazingenergy.core.repository.AggregateRootRepository;
+import com.amazingenergy.core.repository.AggregateRootRepositoryAfterAspect;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +33,8 @@ public class SimpleCommandEvenHandlingTest {
     private AccountRepository accountRepository;
 
     /**
-     * {@link AccountRepository} extends {@link com.amazingenergy.core.repository.Repository}.
-     * However, the {@link com.amazingenergy.core.repository.RepositoryAfterAspect} is not work with {@link MockBean} annotation.
+     * {@link AccountRepository} extends {@link AggregateRootRepository}.
+     * However, the {@link AggregateRootRepositoryAfterAspect} is not work with {@link MockBean} annotation.
      * We have to explicitly handle domain event publishing with mock
      */
     @BeforeEach
@@ -79,5 +81,11 @@ public class SimpleCommandEvenHandlingTest {
 
         Assertions.assertEquals(2, account.getPaymentHistories().size());
         System.out.println("Account after payment: \n" + account + "\n");
+
+        result = (PaymentHistory) commandManager.process(new PaymentRequest(1, 5_200_000, PaymentMethod.Unspecified));
+        Assertions.assertNull(result);
+        Assertions.assertNotNull(commandManager.status.getErrors());
+        Assertions.assertTrue(commandManager.status.hasErrors());
+        Assertions.assertTrue(commandManager.status.getErrors().size() > 0);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 //@Repository
 @Deprecated(since = "this class replaced by mocking bean in Unit Test")
-public class AccountRepositoryImpl implements AccountRepository{
+public class AccountRepositoryImpl implements AccountRepository {
 
     private List<Account> accounts = new ArrayList<Account>() {{
         add(new Account(1, "Tom", AccountType.Business));
@@ -36,5 +36,45 @@ public class AccountRepositoryImpl implements AccountRepository{
         // establish connection to database
         // perform a save change
         return account;
+    }
+
+    @Override
+    public Iterable<Account> saveAll(Iterable<Account> entities) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void update(Account entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void create(Account entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void delete(Account entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<Account> findById(Integer id) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Iterable<Account> findAll() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Long count() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void flush() {
+        throw new UnsupportedOperationException();
     }
 }

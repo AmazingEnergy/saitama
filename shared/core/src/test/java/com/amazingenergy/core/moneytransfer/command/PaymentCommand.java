@@ -1,5 +1,6 @@
 package com.amazingenergy.core.moneytransfer.command;
 
+import com.amazingenergy.core.command.BaseCommand;
 import com.amazingenergy.core.command.Command;
 import com.amazingenergy.core.moneytransfer.domain.PaymentHistory;
 import com.amazingenergy.core.moneytransfer.service.PaymentHandler;
@@ -8,12 +9,16 @@ import com.amazingenergy.core.moneytransfer.view.PaymentRequest;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 @Component
 @Scope("prototype")
-public class PaymentCommand implements Command<PaymentRequest, PaymentHistory> {
-    private final PaymentHandlerResolver paymentHandlerResolver;
+public class PaymentCommand extends BaseCommand<PaymentHistory> implements Command<PaymentRequest, PaymentHistory> {
 
-    private PaymentRequest paymentRequest;
+    private static final String INVALID_PAYMENT_METHOD = "Invalid Given PaymentMethod:{0}";
+
+    private final PaymentHandlerResolver paymentHandlerResolver;
 
     public PaymentCommand(PaymentHandlerResolver paymentHandlerResolver) {
         this.paymentHandlerResolver = paymentHandlerResolver;
@@ -25,17 +30,13 @@ public class PaymentCommand implements Command<PaymentRequest, PaymentHistory> {
     }
 
     @Override
-    public void setState(PaymentRequest state) {
-        this.paymentRequest = state;
-    }
-
-    @Override
-    public PaymentHistory execute() {
+    public PaymentHistory execute(PaymentRequest paymentRequest) {
         System.out.println("Execute " + PaymentCommand.class.getSimpleName());
 
         PaymentHandler paymentHandler = paymentHandlerResolver.getPaymentHandler(paymentRequest.getPaymentMethod().toString());
         if (paymentHandler == null) {
-            throw new IllegalArgumentException("Invalid " + PaymentRequest.class.getSimpleName());
+            addError(INVALID_PAYMENT_METHOD, INVALID_PAYMENT_METHOD, paymentRequest.getPaymentMethod().toString());
+            return null;
         }
 
         if (!paymentHandler.verify(paymentRequest)) {

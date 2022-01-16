@@ -13,6 +13,7 @@ public class PaymentHandlerResolver {
     }
 
     public PaymentHandler getPaymentHandler(String paymentMethod) {
-        return paymentHandlers.stream().filter(handler -> handler.getPaymentMethod().equalsIgnoreCase(paymentMethod)).findFirst().get();
+        var foundHander = paymentHandlers.stream().filter(handler -> handler.getPaymentMethod().equalsIgnoreCase(paymentMethod)).findFirst();
+        return foundHander.orElse(null);
     }
 }

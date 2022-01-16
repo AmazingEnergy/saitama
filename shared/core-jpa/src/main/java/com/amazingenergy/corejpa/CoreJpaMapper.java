@@ -1,0 +1,12 @@
+package com.amazingenergy.corejpa;
+
+import com.amazingenergy.core.domain.AuditSection;
+import com.amazingenergy.corejpa.audit.EmbeddableAuditSection;
+import org.mapstruct.Mapper;
+
+@Mapper
+public interface CoreJpaMapper {
+    EmbeddableAuditSection auditSectionToEmbeddableAuditSection(AuditSection source);
+
+    AuditSection embeddableAuditSectionToAuditSection(EmbeddableAuditSection destination);
+}

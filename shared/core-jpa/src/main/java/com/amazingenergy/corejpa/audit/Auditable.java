@@ -1,4 +1,4 @@
-package com.amazingenergy.saitamajpa.core;
+package com.amazingenergy.corejpa.audit;
 
 public interface Auditable {
     EmbeddableAuditSection getAuditSection();

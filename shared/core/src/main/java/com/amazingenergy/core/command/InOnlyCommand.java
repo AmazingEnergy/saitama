@@ -2,7 +2,7 @@ package com.amazingenergy.core.command;
 
 import com.amazingenergy.core.genericstatus.StatusGenericHandler;
 
-public interface Command<TIn, TOut> extends StatusGenericHandler<TOut> {
+public interface InOnlyCommand<TIn> extends StatusGenericHandler {
     String getName();
-    TOut execute(TIn input);
+    void execute(TIn input);
 }

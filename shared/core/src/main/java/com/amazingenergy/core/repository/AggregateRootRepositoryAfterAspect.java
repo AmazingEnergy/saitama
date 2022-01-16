@@ -13,14 +13,14 @@ import java.io.Serializable;
 @Slf4j
 @Aspect
 @Component
-public class RepositoryAfterAspect {
+public class AggregateRootRepositoryAfterAspect {
     private final EventPublisher eventPublisher;
 
-    public RepositoryAfterAspect(EventPublisher eventPublisher) {
+    public AggregateRootRepositoryAfterAspect(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 
-    @AfterReturning(value = "execution(public * com.amazingenergy.core.repository.Repository.save(..))",
+    @AfterReturning(value = "execution(public * com.amazingenergy.core.repository.AggregateRootRepository.save(..))",
             returning = "aggregateRoot")
     public <K extends Serializable & Comparable<K>, E extends AggregateRoot<K, ?>>
     void afterReturning(JoinPoint joinPoint, AggregateRoot<K, E> aggregateRoot) {

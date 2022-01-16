@@ -1,6 +1,5 @@
 package com.amazingenergy.core.command;
 
-import com.amazingenergy.core.genericstatus.StatusGeneric;
 import com.amazingenergy.core.genericstatus.StatusGenericHandler;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.context.annotation.Scope;
@@ -8,15 +7,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public abstract class CommandManager<TIn, TOut> {
-    public StatusGenericHandler<TOut> status;
+public abstract class InOnlyCommandManager<TIn> {
+    public StatusGenericHandler status;
 
-    public TOut process(TIn commandState) {
-        Command<TIn, TOut> command = createCommand();
+    public void process(TIn commandState) {
+        InOnlyCommand<TIn> command = createCommand();
         status = command;
-        var result = command.execute(commandState);
-        status.setResult(result);
-        return result;
+        command.execute(commandState);
     }
 
     /**
@@ -31,5 +28,5 @@ public abstract class CommandManager<TIn, TOut> {
      * @return Command
      */
     @Lookup
-    protected abstract Command<TIn, TOut> createCommand();
+    protected abstract InOnlyCommand<TIn> createCommand();
 }

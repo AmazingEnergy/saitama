@@ -37,6 +37,7 @@
         <module>saitama-appservice</module>
         <module>saitama-domain</module>
         <module>shared/core</module>
+        <module>shared/core-jpa</module>
     </modules>
 
     <dependencyManagement>
@@ -50,12 +51,17 @@
             </dependency>
             <dependency>
                 <groupId>com.amazingengery</groupId>
-                <artifactId>saitama-domain</artifactId>
+                <artifactId>core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.amazingengery</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>core-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>saitama-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -90,9 +96,9 @@
             <version>3.11</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.1</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -128,12 +134,24 @@
                         </path>
 
                         <!-- additional annotation processor required as of Lombok >= 1.18.16 -->
+                        <!-- reference: https://mapstruct.org/documentation/dev/reference/html/#lombok -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>0.1.0</version>
                         </path>
                     </annotationProcessorPaths>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <!-- reference: https://mapstruct.org/documentation/dev/reference/html/#configuration-options -->
+                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+                        <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
+                        <arg>-Amapstruct.verbose=true</arg>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                        <arg>-Amapstruct.defaultInjectionStrategy=constructor</arg>
+                        <arg>-Amapstruct.unmappedTargetPolicy=IGNORE</arg>
+                        <arg>-Amapstruct.unmappedSourcePolicy=WARN</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
