@@ -8,25 +8,22 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 //@Repository
 @Deprecated(since = "this class replaced by mocking bean in Unit Test")
 public class AccountRepositoryImpl implements AccountRepository {
 
     private List<Account> accounts = new ArrayList<Account>() {{
-        add(new Account(1, "Tom", AccountType.Business));
-        add(new Account(2, "Luu", AccountType.Personal));
-        add(new Account(3, "Yen", AccountType.Business));
+        add(new Account("Tom", AccountType.Business));
+        add(new Account("Luu", AccountType.Personal));
+        add(new Account("Yen", AccountType.Business));
     }};
 
     private final EventPublisher eventPublisher;
 
     public AccountRepositoryImpl(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
-    }
-
-    public Optional<Account> getById(int id) {
-        return accounts.stream().filter(a -> a.getId() == id).findFirst();
     }
 
     /**
@@ -59,8 +56,8 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findById(Integer id) {
-        throw new UnsupportedOperationException();
+    public Optional<Account> findById(UUID id) {
+        return accounts.stream().filter(a -> a.getId() == id).findFirst();
     }
 
     @Override

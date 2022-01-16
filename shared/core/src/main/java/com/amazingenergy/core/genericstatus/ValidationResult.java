@@ -15,7 +15,7 @@ public class ValidationResult {
     public String errorMessage;
 
     public ValidationResult(String errorMessage) {
-        this(errorMessage, null);
+        this(errorMessage, new ArrayList<>());
     }
 
     public ValidationResult(String errorMessage, List<String> memberNames) {
@@ -23,10 +23,9 @@ public class ValidationResult {
         this.memberNames = memberNames != null ? memberNames : new ArrayList<>();
     }
 
-    public ValidationResult(String errorCode, String errorMessage, List<String> memberNames) {
+    public ValidationResult(String errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
-        this.memberNames = memberNames != null ? memberNames : new ArrayList<>();
     }
 
     protected ValidationResult(ValidationResult validationResult) {

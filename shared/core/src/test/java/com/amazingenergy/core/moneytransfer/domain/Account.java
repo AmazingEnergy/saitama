@@ -1,20 +1,22 @@
 package com.amazingenergy.core.moneytransfer.domain;
 
 import com.amazingenergy.core.domain.AggregateRoot;
+import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-public class Account extends AggregateRoot<Integer, Account> {
-    private String name;
-    private AccountType type;
-    private List<PaymentHistory> paymentHistories;
+@Getter
+public class Account extends AggregateRoot<UUID, Account> {
+    private final String name;
+    private final AccountType type;
+    private final List<PaymentHistory> paymentHistories;
     private double memberBankPoint;
     private double memberEWalletPoint;
 
-    public Account(int id, String name, AccountType type) {
-        super(id);
+    public Account(String name, AccountType type) {
+        super(UUID.randomUUID());
         this.name = name;
         this.type = type;
         this.paymentHistories = new ArrayList<>();
@@ -27,40 +29,27 @@ public class Account extends AggregateRoot<Integer, Account> {
         paymentHistories.add(paymentHistory);
     }
 
-    public double earnBankPoint(double point) {
+    public void earnBankPoint(double point) {
         this.addEvent(new AccountEarnBankPointEvent(this, point));
-        return this.memberBankPoint += point;
+        this.memberBankPoint += point;
     }
 
-    public double earnEWalletPoint(double point) {
+    public void earnEWalletPoint(double point) {
         this.addEvent(new AccountEarnEWalletPointEvent(this, point));
-        return this.memberEWalletPoint += point;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public AccountType getType() {
-        return type;
-    }
-
-    public List<PaymentHistory> getPaymentHistories() {
-        return paymentHistories;
+        this.memberEWalletPoint += point;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Account { "
-                + "[Id]:" + this.id
-                + ", [Name]:" + this.name
-                + ", [PaymentCount]:" + this.paymentHistories.stream().count()
-                + ", [BankPoint]:" + this.memberBankPoint
-                + ", [EWalletPoint]:" + this.memberEWalletPoint
-                + " }\n");
+        stringBuilder.append("Account { " + "[Id]:").append(this.id)
+                .append(", [Name]:").append(this.name)
+                .append(", [PaymentCount]:").append((long) this.paymentHistories.size())
+                .append(", [BankPoint]:").append(this.memberBankPoint)
+                .append(", [EWalletPoint]:").append(this.memberEWalletPoint)
+                .append(" }\n");
 
-        this.paymentHistories.forEach(p -> stringBuilder.append(p + "\n"));
+        this.paymentHistories.forEach(p -> stringBuilder.append(p).append("\n"));
 
         return stringBuilder.toString();
     }

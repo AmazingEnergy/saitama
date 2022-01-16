@@ -3,6 +3,7 @@ package com.amazingenergy.core.genericstatus;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -134,9 +135,9 @@ public class StatusGenericHandlerImpl<T> implements StatusGenericHandler<T> {
     }
 
     @Override
-    public StatusGeneric<T> addError(String errorCode, String errorMessage, String... propertyNames) {
+    public StatusGeneric<T> addError(String errorCode, String errorMessage, Object... parameters) {
         if (errorMessage == null) throw new IllegalArgumentException("errorMessage");
-        _errors.add(new ErrorGeneric(this.header, new ValidationResult(errorCode, errorMessage, Arrays.asList(propertyNames))));
+        _errors.add(new ErrorGeneric(this.header, new ValidationResult(errorCode, MessageFormat.format(errorMessage, parameters))));
         return this;
     }
 

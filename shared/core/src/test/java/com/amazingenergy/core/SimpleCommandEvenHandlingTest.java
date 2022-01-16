@@ -1,10 +1,9 @@
 package com.amazingenergy.core;
 
-import com.amazingenergy.core.moneytransfer.domain.Account;
-import com.amazingenergy.core.moneytransfer.domain.AccountType;
-import com.amazingenergy.core.moneytransfer.domain.PaymentHistory;
-import com.amazingenergy.core.moneytransfer.domain.PaymentMethod;
-import com.amazingenergy.core.moneytransfer.view.PaymentRequest;
+import com.amazingenergy.core.command.InOnlyCommandManager;
+import com.amazingenergy.core.moneytransfer.domain.*;
+import com.amazingenergy.core.moneytransfer.view.CancelPaymentRequest;
+import com.amazingenergy.core.moneytransfer.view.CreatePaymentRequest;
 import com.amazingenergy.core.publisher.EventPublisher;
 import com.amazingenergy.core.repository.AggregateRootRepository;
 import com.amazingenergy.core.repository.AggregateRootRepositoryAfterAspect;
@@ -20,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 public class SimpleCommandEvenHandlingTest {
@@ -27,10 +27,15 @@ public class SimpleCommandEvenHandlingTest {
     private CommandManager commandManager;
 
     @Autowired
+    private InOnlyCommandManager inOnlyCommandManager;
+
+    @Autowired
     private EventPublisher eventPublisher;
 
     @MockBean
     private AccountRepository accountRepository;
+
+    private List<Account> accounts;
 
     /**
      * {@link AccountRepository} extends {@link AggregateRootRepository}.
@@ -39,10 +44,10 @@ public class SimpleCommandEvenHandlingTest {
      */
     @BeforeEach
     public void setUp() {
-        List<Account> accounts = new ArrayList<Account>() {{
-            add(new Account(1, "Tom", AccountType.Business));
-            add(new Account(2, "Luu", AccountType.Personal));
-            add(new Account(3, "Yen", AccountType.Business));
+        accounts = new ArrayList<Account>() {{
+            add(new Account("Tom", AccountType.Business));
+            add(new Account("Luu", AccountType.Personal));
+            add(new Account("Yen", AccountType.Business));
         }};
 
         Mockito.doAnswer(invocation -> {
@@ -56,36 +61,73 @@ public class SimpleCommandEvenHandlingTest {
         }).when(accountRepository).save(Mockito.any(Account.class));
 
         Mockito.doAnswer(invocation -> {
-            var id = (int) invocation.getArgument(0);
+            var id = (UUID) invocation.getArgument(0);
             return accounts.stream().filter(a -> a.getId() == id).findFirst();
-        }).when(accountRepository).getById(Mockito.any(Integer.class));
+        }).when(accountRepository).findById(Mockito.any(UUID.class));
     }
 
     @Test
-    void simpleTest_ShouldSuccess() {
-        Account account = accountRepository.getById(1).get();
+    void runCommand_AndTriggerEvent_ShouldSuccess() {
+        var accountId = accounts.get(0).getId();
+
+        Account account = accountRepository.findById(accountId).get();
         Assertions.assertNotNull(account);
         Assertions.assertEquals(0, account.getPaymentHistories().size());
         System.out.println("Account before payment: \n" + account + "\n");
 
-        PaymentHistory result = (PaymentHistory) commandManager.process(new PaymentRequest(1, 400_000, PaymentMethod.EWallet));
-        Assertions.assertNotNull(result);
-        System.out.println("Result from command: \n" + result + "\n");
+        var firstPayment = (PaymentHistory) commandManager.process(new CreatePaymentRequest(accountId, 400_000, PaymentMethod.EWallet));
+        Assertions.assertNotNull(firstPayment);
+        System.out.println("Result from command: \n" + firstPayment + "\n");
 
         Assertions.assertEquals(1, account.getPaymentHistories().size());
         System.out.println("Account after payment: \n" + account + "\n");
 
-        result = (PaymentHistory) commandManager.process(new PaymentRequest(1, 3_900_000, PaymentMethod.Bank));
-        Assertions.assertNotNull(result);
-        System.out.println("Result from command: \n" + result + "\n");
+        var secondPayment = (PaymentHistory) commandManager.process(new CreatePaymentRequest(accountId, 3_900_000, PaymentMethod.Bank));
+        Assertions.assertNotNull(secondPayment);
+        Assertions.assertNotEquals(firstPayment.getId(), secondPayment.getId());
+        System.out.println("Result from command: \n" + secondPayment + "\n");
 
         Assertions.assertEquals(2, account.getPaymentHistories().size());
         System.out.println("Account after payment: \n" + account + "\n");
 
-        result = (PaymentHistory) commandManager.process(new PaymentRequest(1, 5_200_000, PaymentMethod.Unspecified));
-        Assertions.assertNull(result);
+        var thirdPayment = (PaymentHistory) commandManager.process(new CreatePaymentRequest(accountId, 5_200_000, PaymentMethod.Unspecified));
+        Assertions.assertNull(thirdPayment);
         Assertions.assertNotNull(commandManager.status.getErrors());
         Assertions.assertTrue(commandManager.status.hasErrors());
         Assertions.assertTrue(commandManager.status.getErrors().size() > 0);
+    }
+
+    @Test
+    void runInOnlyCommand_AndTriggerEvent_ShouldSuccess() {
+        var accountId = accounts.get(0).getId();
+
+        Account account = accountRepository.findById(accountId).get();
+        Assertions.assertNotNull(account);
+        Assertions.assertEquals(0, account.getPaymentHistories().size());
+        System.out.println("Account before payment: \n" + account + "\n");
+
+        var firstPayment = (PaymentHistory) commandManager.process(new CreatePaymentRequest(accountId, 400_000, PaymentMethod.EWallet));
+        Assertions.assertNotNull(firstPayment);
+        System.out.println("Result from command: \n" + firstPayment + "\n");
+
+        Assertions.assertEquals(1, account.getPaymentHistories().size());
+        var processingPayment = account.getPaymentHistories().stream().findFirst().get();
+        Assertions.assertEquals(firstPayment.getId(), processingPayment.getId());
+        Assertions.assertEquals(PaymentStatus.PROCESSING, processingPayment.getStatus());
+        System.out.println("Account after payment: \n" + account + "\n");
+
+        inOnlyCommandManager.process(new CancelPaymentRequest(accountId, firstPayment.getId()));
+        Assertions.assertFalse(inOnlyCommandManager.status.hasErrors());
+        Assertions.assertEquals(0, inOnlyCommandManager.status.getErrors().size());
+
+        Assertions.assertEquals(1, account.getPaymentHistories().size());
+        var cancelledPayment = account.getPaymentHistories().stream().findFirst().get();
+        Assertions.assertEquals(firstPayment.getId(), cancelledPayment.getId());
+        Assertions.assertEquals(PaymentStatus.CANCELLED, cancelledPayment.getStatus());
+        System.out.println("Account after cancel payment: \n" + account + "\n");
+
+        inOnlyCommandManager.process(new CancelPaymentRequest(accountId, firstPayment.getId()));
+        Assertions.assertTrue(inOnlyCommandManager.status.hasErrors());
+        Assertions.assertTrue(inOnlyCommandManager.status.getErrors().size() > 0);
     }
 }

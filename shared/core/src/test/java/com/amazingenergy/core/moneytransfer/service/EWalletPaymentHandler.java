@@ -1,9 +1,10 @@
 package com.amazingenergy.core.moneytransfer.service;
 
+import com.amazingenergy.core.Notification;
 import com.amazingenergy.core.moneytransfer.domain.Account;
 import com.amazingenergy.core.moneytransfer.domain.PaymentHistory;
 import com.amazingenergy.core.moneytransfer.repository.AccountRepository;
-import com.amazingenergy.core.moneytransfer.view.PaymentRequest;
+import com.amazingenergy.core.moneytransfer.view.CreatePaymentRequest;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,9 @@ import java.util.Optional;
 
 @Service("EWallet")
 public class EWalletPaymentHandler implements PaymentHandler, BeanNameAware {
+    private static final String ACCOUNT_NOT_FOUND = "Account Id:{0} is not found.";
+    private static final String INVALID_PAYMENT_AMOUNT = "Account Type:{0} is not allow to create payment with Amount:{1}.";
+
     private String paymentMethod;
 
     private AccountRepository accountRepository;
@@ -25,45 +29,53 @@ public class EWalletPaymentHandler implements PaymentHandler, BeanNameAware {
     }
 
     @Override
-    public boolean verify(PaymentRequest paymentRequest) {
-        Optional<Account> accountOpt = accountRepository.getById(paymentRequest.getAccountId());
+    public Notification verify(CreatePaymentRequest createPaymentRequest) {
+        var notification = Notification.instance();
 
-        if (!accountOpt.isPresent())
-            return false;
+        Optional<Account> accountOpt = accountRepository.findById(createPaymentRequest.getAccountId());
+
+        if (accountOpt.isEmpty())
+            return notification.addErrorCode("ACCOUNT_NOT_FOUND", ACCOUNT_NOT_FOUND, createPaymentRequest.getAccountId());
 
         Account account = accountOpt.get();
 
+        var isValidAmount = false;
         switch (account.getType()) {
             case Business:
-                return paymentRequest.getAmount() < 2_000_000;
+                isValidAmount = createPaymentRequest.getAmount() < 2_000_000;
+                break;
             case Personal:
-                return paymentRequest.getAmount() < 500_000;
+                isValidAmount = createPaymentRequest.getAmount() < 500_000;
+                break;
             case MTO:
-                return paymentRequest.getAmount() < 70_000_000;
+                isValidAmount = createPaymentRequest.getAmount() < 70_000_000;
+                break;
         }
 
-        return false;
+        return isValidAmount
+                ? notification
+                : notification.addErrorCode(INVALID_PAYMENT_AMOUNT, INVALID_PAYMENT_AMOUNT, account.getType(), createPaymentRequest.getAmount());
     }
 
     @Override
-    public PaymentHistory pay(PaymentRequest paymentRequest) {
-        System.out.println("Received a payment request " + paymentRequest);
+    public PaymentHistory pay(CreatePaymentRequest createPaymentRequest) {
+        System.out.println("Received a payment request " + createPaymentRequest);
         System.out.println("Pay with " + paymentMethod);
         System.out.println("[Processing] call EWallet third-party. . . . . . . .");
         System.out.println(". . . . . . . .Completed!");
 
-        Optional<Account> accountOpt = accountRepository.getById(paymentRequest.getAccountId());
+        Optional<Account> accountOpt = accountRepository.findById(createPaymentRequest.getAccountId());
 
-        if (!accountOpt.isPresent())
+        if (accountOpt.isEmpty())
             return null;
 
         Account account = accountOpt.get();
 
-        PaymentHistory paymentHistory = new PaymentHistory(account.getId(), paymentRequest.getAmount(), paymentRequest.getPaymentMethod(), true);
+        PaymentHistory paymentHistory = new PaymentHistory(account.getId(), createPaymentRequest.getAmount(), createPaymentRequest.getPaymentMethod(), true);
 
         account.AddPayment(paymentHistory);
 
-        Double earnedPoint = (paymentRequest.getAmount() / 100_000) * 0.001;
+        Double earnedPoint = (createPaymentRequest.getAmount() / 100_000) * 0.001;
         account.earnEWalletPoint(earnedPoint);
 
         accountRepository.save(account);

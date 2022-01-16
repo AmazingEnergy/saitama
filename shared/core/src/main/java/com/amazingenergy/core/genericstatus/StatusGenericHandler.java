@@ -19,7 +19,7 @@ public interface StatusGenericHandler<T> extends StatusGeneric<T> {
      */
     StatusGeneric<T> addError(String errorMessage, List<String> propertyNames);
 
-    StatusGeneric<T> addError(String errorCode, String errorMessage, String... propertyNames);
+    StatusGeneric<T> addError(String errorCode, String errorMessage, Object... parameters);
 
     /**
      * This adds one error to the Errors collection and saves the exception's data to the DebugData property

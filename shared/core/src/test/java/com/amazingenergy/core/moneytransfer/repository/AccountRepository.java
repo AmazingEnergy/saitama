@@ -5,7 +5,7 @@ import com.amazingenergy.core.moneytransfer.domain.Account;
 import com.amazingenergy.core.repository.AggregateRootRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface AccountRepository extends AggregateRootRepository<Integer, Account> {
-    Optional<Account> getById(int id);
+public interface AccountRepository extends AggregateRootRepository<UUID, Account> {
 }

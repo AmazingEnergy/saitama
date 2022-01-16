@@ -1,9 +1,8 @@
 package com.amazingenergy.core.command;
 
+import com.amazingenergy.core.Notification;
 import com.amazingenergy.core.genericstatus.StatusGenericHandlerImpl;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
 
 public abstract class BaseCommand<T> extends StatusGenericHandlerImpl<T> {
     /**
@@ -28,7 +27,7 @@ public abstract class BaseCommand<T> extends StatusGenericHandlerImpl<T> {
                 throw new IllegalStateException("When set ErrorCode, ErrorMessage must have value");
             }
 
-            addError(notification.getErrorMessage(), notification.getErrorCode());
+            addError(notification.getErrorCode(), notification.getErrorMessage());
             return;
         }
 

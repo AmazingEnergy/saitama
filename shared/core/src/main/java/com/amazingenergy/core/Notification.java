@@ -1,4 +1,4 @@
-package com.amazingenergy.core.command;
+package com.amazingenergy.core;
 
 import com.amazingenergy.core.genericstatus.ValidationResult;
 import lombok.Getter;
@@ -22,35 +22,39 @@ public class Notification {
         return new Notification();
     }
 
-    public void addError(String fieldName, String errorMessage) {
+    public Notification addError(String fieldName, String errorMessage) {
         if (validationResults == null)
             validationResults = new ArrayList<>();
 
         validationResults.add(new ValidationResult(errorMessage, new ArrayList<>() {{
             add(fieldName);
         }}));
+        return this;
     }
 
-    public void addErrors(List<ValidationResult> errors) {
+    public Notification addErrors(List<ValidationResult> errors) {
         if (validationResults == null)
             validationResults = new ArrayList<>();
         validationResults.addAll(errors);
+        return this;
     }
 
-    public void addErrorCode(String errorCode, String messageTemplate, Object... parameters) {
+    public Notification addErrorCode(String errorCode, String messageTemplate, Object... parameters) {
         if (!StringUtils.isEmpty(this.errorCode) && !StringUtils.equalsIgnoreCase(this.errorCode, errorCode)) {
             throw new IllegalStateException("ErrorCode" + errorCode + " has been set. Only one errorCode support");
         }
         this.errorCode = errorCode;
         this.errorMessage = MessageFormat.format(messageTemplate, parameters);
+        return this;
     }
 
-    public void addErrorCode(String errorCode, String message) {
+    public Notification addErrorCode(String errorCode, String message) {
         if (!StringUtils.isEmpty(this.errorCode) && !StringUtils.equalsIgnoreCase(this.errorCode, errorCode)) {
             throw new IllegalStateException("ErrorCode" + errorCode + " has been set. Only one errorCode support");
         }
         this.errorCode = errorCode;
         this.errorMessage = message;
+        return this;
     }
 
     public boolean hasError() {

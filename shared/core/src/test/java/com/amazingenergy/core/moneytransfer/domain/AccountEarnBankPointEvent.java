@@ -1,7 +1,9 @@
 package com.amazingenergy.core.moneytransfer.domain;
 
 import com.amazingenergy.core.domain.Event;
+import lombok.Getter;
 
+@Getter
 public class AccountEarnBankPointEvent extends Event<Account> {
     private final double earnedPoint;
 
@@ -14,10 +16,6 @@ public class AccountEarnBankPointEvent extends Event<Account> {
     public AccountEarnBankPointEvent(Account source, double earnedPoint) {
         super(source);
         this.earnedPoint = earnedPoint;
-    }
-
-    public double getEarnedPoint() {
-        return earnedPoint;
     }
 
     @Override
