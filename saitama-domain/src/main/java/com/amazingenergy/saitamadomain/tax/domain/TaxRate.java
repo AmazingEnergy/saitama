@@ -3,7 +3,7 @@ package com.amazingenergy.saitamadomain.tax.domain;
 import com.amazingenergy.core.domain.AuditSection;
 import com.amazingenergy.core.domain.Entity;
 import com.amazingenergy.saitamadomain.reference.domain.Country;
-import com.amazingenergy.saitamadomain.reference.domain.Description;
+import com.amazingenergy.saitamadomain.common.Description;
 import com.amazingenergy.saitamadomain.reference.domain.Zone;
 import com.amazingenergy.saitamadomain.merchant.domain.MerchantStore;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class TaxRate extends Entity<UUID, TaxRate> {
     private BigDecimal taxRate;
     private TaxClass taxClass;
     private MerchantStore merchantStore;
-    private List<Description> descriptions = new ArrayList<>();
+    private List<TaxRateDescription> descriptions = new ArrayList<>();
     private Country country;
     private Zone zone;
     private String stateProvince;

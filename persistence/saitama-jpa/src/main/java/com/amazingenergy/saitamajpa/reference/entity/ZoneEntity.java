@@ -17,17 +17,11 @@ import java.util.UUID;
 public class ZoneEntity {
     @Id
     @Column(name = "Id")
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            pkColumnValue = "ZoneSeqNextVal")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL)
-    private List<DescriptionEntity> descriptions = new ArrayList<>();
+    private List<ZoneDescriptionEntity> descriptions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CountryId", nullable = false)

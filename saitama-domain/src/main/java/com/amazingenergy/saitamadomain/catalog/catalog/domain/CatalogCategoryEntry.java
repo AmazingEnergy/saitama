@@ -18,8 +18,8 @@ public class CatalogCategoryEntry extends Entity<UUID, CatalogCategoryEntry> {
         super(UUID.randomUUID());
     }
 
-    public CatalogCategoryEntry(UUID id, Category category, AuditSection auditSection) {
-        super(id);
+    public CatalogCategoryEntry(Category category, AuditSection auditSection) {
+        super(UUID.randomUUID());
         this.category = category;
         this.auditSection = auditSection;
     }

@@ -1,10 +1,9 @@
 package com.amazingenergy.saitamajpa.catalog.catalog.entity;
 
-import com.amazingenergy.saitamadomain.constants.SchemaConstant;
+import com.amazingenergy.corejpa.audit.AuditListener;
+import com.amazingenergy.corejpa.audit.Auditable;
+import com.amazingenergy.corejpa.audit.EmbeddableAuditSection;
 import com.amazingenergy.saitamajpa.catalog.category.entity.CategoryEntity;
-import com.amazingenergy.saitamajpa.core.AuditListener;
-import com.amazingenergy.saitamajpa.core.Auditable;
-import com.amazingenergy.saitamajpa.core.EmbeddableAuditSection;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,15 +21,7 @@ public class CatalogCategoryEntryEntity implements Auditable {
     private EmbeddableAuditSection auditSection;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            allocationSize = SchemaConstant.DESCRIPTION_ID_ALLOCATION_SIZE,
-            initialValue = SchemaConstant.DESCRIPTION_ID_START_VALUE,
-            pkColumnValue = "CatalogEntSeqNextVal")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne

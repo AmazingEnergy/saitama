@@ -2,6 +2,8 @@ package com.amazingenergy.saitamadomain.customer.domain;
 
 import com.amazingenergy.core.domain.AggregateRoot;
 import com.amazingenergy.core.domain.AuditSection;
+import com.amazingenergy.saitamadomain.common.Billing;
+import com.amazingenergy.saitamadomain.common.Delivery;
 import com.amazingenergy.saitamadomain.reference.domain.Language;
 import com.amazingenergy.saitamadomain.customer.domain.attribute.CustomerAttribute;
 import com.amazingenergy.saitamadomain.merchant.domain.MerchantStore;

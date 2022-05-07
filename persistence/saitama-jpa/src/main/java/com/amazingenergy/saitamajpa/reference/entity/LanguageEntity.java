@@ -1,8 +1,8 @@
 package com.amazingenergy.saitamajpa.reference.entity;
 
-import com.amazingenergy.saitamajpa.core.AuditListener;
-import com.amazingenergy.saitamajpa.core.Auditable;
-import com.amazingenergy.saitamajpa.core.EmbeddableAuditSection;
+import com.amazingenergy.corejpa.audit.AuditListener;
+import com.amazingenergy.corejpa.audit.Auditable;
+import com.amazingenergy.corejpa.audit.EmbeddableAuditSection;
 import com.amazingenergy.saitamajpa.merchant.entity.MerchantStoreEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,25 +11,20 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "Language", indexes = { @Index(name="CodeIdx2", columnList = "Code")})
+@Table(name = "Language", indexes = {@Index(name = "CodeIdx2", columnList = "Code")})
 @Cacheable
 public class LanguageEntity implements Auditable {
     @Id
     @Column(name = "Id")
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            pkColumnValue = "LangSeqNextVal")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Embedded
     private EmbeddableAuditSection auditSection;

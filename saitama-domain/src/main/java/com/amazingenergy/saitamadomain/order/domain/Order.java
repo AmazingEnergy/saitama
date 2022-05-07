@@ -1,9 +1,9 @@
 package com.amazingenergy.saitamadomain.order.domain;
 
 import com.amazingenergy.core.domain.AggregateRoot;
-import com.amazingenergy.saitamadomain.customer.domain.Billing;
+import com.amazingenergy.saitamadomain.common.Billing;
 import com.amazingenergy.saitamadomain.customer.domain.Customer;
-import com.amazingenergy.saitamadomain.customer.domain.Delivery;
+import com.amazingenergy.saitamadomain.common.Delivery;
 import com.amazingenergy.saitamadomain.merchant.domain.MerchantStore;
 import com.amazingenergy.saitamadomain.order.domain.attribute.OrderAttribute;
 import com.amazingenergy.saitamadomain.order.domain.orderproduct.OrderProduct;

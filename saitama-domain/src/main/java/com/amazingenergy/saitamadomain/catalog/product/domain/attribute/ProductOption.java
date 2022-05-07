@@ -1,7 +1,6 @@
 package com.amazingenergy.saitamadomain.catalog.product.domain.attribute;
 
 import com.amazingenergy.core.domain.Entity;
-import com.amazingenergy.saitamadomain.reference.domain.Description;
 import com.amazingenergy.saitamadomain.merchant.domain.MerchantStore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +15,7 @@ public class ProductOption extends Entity<UUID, ProductOption> {
     private String code;
     private int sortOrder;
     private ProductOptionType type;
-    private Set<Description> descriptions = new HashSet<>();
+    private Set<ProductOptionDescription> descriptions = new HashSet<>();
     private MerchantStore merchantStore;
     private boolean readOnly;
 

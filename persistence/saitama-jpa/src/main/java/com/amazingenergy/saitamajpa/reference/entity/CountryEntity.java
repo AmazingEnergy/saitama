@@ -18,17 +18,11 @@ import java.util.UUID;
 public class CountryEntity {
     @Id
     @Column(name="Id")
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            pkColumnValue = "CountrySeqNextVal")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
-    private Set<DescriptionEntity> descriptions = new HashSet<>();
+    private Set<CountryDescriptionEntity> descriptions = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "country")
     private Set<ZoneEntity> zones = new HashSet<>();

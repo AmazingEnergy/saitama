@@ -1,7 +1,7 @@
 package com.amazingenergy.saitamadomain.catalog.product.domain.attribute;
 
 import com.amazingenergy.core.domain.Entity;
-import com.amazingenergy.saitamadomain.catalog.product.domain.ProductType;
+import com.amazingenergy.saitamadomain.catalog.product.domain.type.ProductType;
 import com.amazingenergy.saitamadomain.merchant.domain.MerchantStore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

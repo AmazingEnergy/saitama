@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface CoreJpaMapper {
-    EmbeddableAuditSection auditSectionToEmbeddableAuditSection(AuditSection source);
+    EmbeddableAuditSection to(AuditSection source);
 
-    AuditSection embeddableAuditSectionToAuditSection(EmbeddableAuditSection destination);
+    AuditSection from(EmbeddableAuditSection destination);
 }

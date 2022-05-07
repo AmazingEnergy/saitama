@@ -12,8 +12,4 @@ public interface SimpleMapper {
 
     @Mappings({@Mapping(target = "id", source = "destination.destinationId")})
     SimpleSource destinationToSource(SimpleDestination destination);
-
-    EmbeddableAuditSection auditSectionToEmbeddableAuditSection(AuditSection source);
-
-    AuditSection embeddableAuditSectionToAuditSection(EmbeddableAuditSection destination);
 }

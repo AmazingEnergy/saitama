@@ -16,13 +16,7 @@ import java.util.UUID;
 public class CurrencyEntity {
     @Id
     @Column(name = "Id")
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            pkColumnValue = "CurrencySeqNextVal")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(name = "CurrencyCurrencyCode" ,nullable = false, unique = true)

@@ -1,12 +1,12 @@
 package com.amazingenergy.saitamajpa.merchant.entity;
 
+import com.amazingenergy.corejpa.audit.AuditListener;
+import com.amazingenergy.corejpa.audit.Auditable;
+import com.amazingenergy.corejpa.audit.EmbeddableAuditSection;
 import com.amazingenergy.saitamajpa.reference.entity.CountryEntity;
 import com.amazingenergy.saitamajpa.reference.entity.CurrencyEntity;
 import com.amazingenergy.saitamajpa.reference.entity.LanguageEntity;
 import com.amazingenergy.saitamajpa.reference.entity.ZoneEntity;
-import com.amazingenergy.saitamajpa.core.AuditListener;
-import com.amazingenergy.saitamajpa.core.Auditable;
-import com.amazingenergy.saitamajpa.core.EmbeddableAuditSection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,13 +23,7 @@ import java.util.*;
 public class MerchantStoreEntity implements Auditable {
     @Id
     @Column(name = "Id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            pkColumnValue = "StoreSeqNextVal")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Embedded

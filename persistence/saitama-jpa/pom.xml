@@ -20,6 +20,10 @@
     <dependencies>
         <dependency>
             <groupId>com.amazingengery</groupId>
+            <artifactId>core-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.amazingengery</groupId>
             <artifactId>saitama-appservice</artifactId>
         </dependency>
         <dependency>

@@ -1,9 +1,8 @@
 package com.amazingenergy.saitamajpa.catalog.category.entity;
 
-import com.amazingenergy.saitamajpa.reference.entity.DescriptionEntity;
-import com.amazingenergy.saitamajpa.core.AuditListener;
-import com.amazingenergy.saitamajpa.core.Auditable;
-import com.amazingenergy.saitamajpa.core.EmbeddableAuditSection;
+import com.amazingenergy.corejpa.audit.AuditListener;
+import com.amazingenergy.corejpa.audit.Auditable;
+import com.amazingenergy.corejpa.audit.EmbeddableAuditSection;
 import com.amazingenergy.saitamajpa.merchant.entity.MerchantStoreEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,20 +21,14 @@ import java.util.*;
 public class CategoryEntity implements Auditable {
     @Id
     @Column(name = "Id", unique=true, nullable=false)
-    @GeneratedValue(strategy = GenerationType.TABLE,
-            generator = "TableGen")
-    @TableGenerator(name = "TableGen",
-            table = "SmSequencer",
-            pkColumnName = "SeqName",
-            valueColumnName = "SeqCount",
-            pkColumnValue = "CategorySeqNextVal")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Embedded
     private EmbeddableAuditSection auditSection;
 
     @OneToMany(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<DescriptionEntity> descriptions = new HashSet<>();
+    private Set<CategoryDescriptionEntity> descriptions = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MerchantId", nullable=false)

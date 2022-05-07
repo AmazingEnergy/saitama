@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories(basePackages = {"com.amazingenergy.saitamajpa"})
 @EntityScan(basePackages = {"com.amazingenergy.saitamajpa"})
-@Configuration
+@Configuration("jpa-config")
 public class BeanConfig {
 }
