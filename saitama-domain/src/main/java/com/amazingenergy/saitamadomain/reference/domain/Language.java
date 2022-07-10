@@ -18,6 +18,11 @@ public class Language extends Entity<UUID, Language> {
         super(UUID.randomUUID());
     }
 
+    public Language(String code) {
+        super(UUID.randomUUID());
+        this.code = code;
+    }
+
     public Language(UUID id, String code, AuditSection auditSection) {
         super(id);
         this.code = code;

@@ -1,4 +1,4 @@
-package com.amazingenergy.saitamaappservice.user.repository;
+package com.amazingenergy.saitamaappservice.user.query;
 
 import com.amazingenergy.saitamaappservice.user.model.PermissionCriteria;
 import com.amazingenergy.saitamadomain.user.domain.Permission;

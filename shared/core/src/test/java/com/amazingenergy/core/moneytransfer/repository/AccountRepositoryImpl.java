@@ -36,7 +36,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Iterable<Account> saveAll(Iterable<Account> entities) {
+    public List<Account> saveAll(Iterable<Account> entities) {
         throw new UnsupportedOperationException();
     }
 
@@ -61,7 +61,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Iterable<Account> findAll() {
+    public List<Account> findAll() {
         throw new UnsupportedOperationException();
     }
 

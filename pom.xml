@@ -37,8 +37,8 @@
         <module>saitama-appservice</module>
         <module>saitama-domain</module>
         <module>shared/core</module>
-        <module>shared/core-jpa</module>
         <module>saitama-infras</module>
+        <module>shared/core-jpa</module>
     </modules>
 
     <dependencyManagement>
@@ -73,6 +73,11 @@
             <dependency>
                 <groupId>com.amazingengery</groupId>
                 <artifactId>saitama-appservice</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>saitama-infras</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

@@ -9,6 +9,7 @@ import com.amazingenergy.saitamadomain.tax.domain.TaxClass;
 import com.amazingenergy.saitamadomain.tax.domain.TaxRate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TaxRateRepository extends EntityRepository<UUID, TaxRate> {
@@ -20,9 +21,9 @@ public interface TaxRateRepository extends EntityRepository<UUID, TaxRate> {
     List<TaxRate> listByCountryStateProvinceAndTaxClass(Country country, String stateProvince,
                                                         TaxClass taxClass, MerchantStore store, Language language);
 
-    TaxRate getByCode(String code, MerchantStore store);
+    Optional<TaxRate> getByCode(String code, MerchantStore store);
 
-    TaxRate getById(Long id, MerchantStore store);
+    Optional<TaxRate> getById(UUID id, MerchantStore store);
 
     List<TaxRate> listByStore(MerchantStore store, Language language);
 

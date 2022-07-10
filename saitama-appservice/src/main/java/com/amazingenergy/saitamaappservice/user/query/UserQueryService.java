@@ -1,4 +1,4 @@
-package com.amazingenergy.saitamaappservice.user.repository;
+package com.amazingenergy.saitamaappservice.user.query;
 
 import com.amazingenergy.saitamaappservice.user.model.UserCriteria;
 import com.amazingenergy.saitamadomain.user.domain.User;

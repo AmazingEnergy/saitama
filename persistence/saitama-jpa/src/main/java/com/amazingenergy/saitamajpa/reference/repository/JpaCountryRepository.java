@@ -17,6 +17,10 @@ public interface JpaCountryRepository extends JpaRepository<CountryEntity, UUID>
             "where c.isoCode=?1")
     Optional<CountryEntity> findByIsoCode(String code);
 
+    @Query("select c from CountryEntity c " +
+            "left join fetch c.descriptions cd " +
+            "where cd.language.id=?2 and c.isoCode in ?1")
+    List<CountryEntity> listCountries(List<String> isoCodes, UUID languageId);
 
     @Query("select c from CountryEntity c " +
             "left join fetch c.descriptions cd " +

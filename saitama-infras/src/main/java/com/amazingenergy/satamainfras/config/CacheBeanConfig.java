@@ -46,7 +46,7 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 @EnableCaching(mode = AdviceMode.PROXY, proxyTargetClass = false, order = Ordered.LOWEST_PRECEDENCE)
-public class CacheConfig {
+public class CacheBeanConfig {
     /**
      * we use CacheManager is auto-configured by Spring Boot.
      * we can further tune its configuration before it is fully initialized.
@@ -65,7 +65,7 @@ public class CacheConfig {
     public Resource cacheManagerConfigFile;
 
     @Bean
-    public CacheManager EhcacheManager() throws IOException {
+    public CacheManager EhcacheManager() {
         var cachingProvider = (EhcacheCachingProvider) Caching.getCachingProvider();
 
         var cacheManagerConfigBuilder = ConfigurationBuilder.newConfigurationBuilder()
@@ -91,32 +91,27 @@ public class CacheConfig {
                         TimeUnit.SECONDS, 3).queueSize(3).concurrencyLevel(1);
 
         cacheManagerConfigBuilder = cacheManagerConfigBuilder
-                .withCache("countries", getJavaBaseCacheConfig(SimpleKey.class, Country.class)
+                .withCache("country", getJavaBaseCacheConfig(SimpleKey.class, Country.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("countries_string", getJavaBaseCacheConfig(String.class, Country.class)
+                .withCache("countries", getJavaBaseCacheConfig(String.class, Country.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("countries_uuid", getJavaBaseCacheConfig(UUID.class, Country.class)
+                .withCache("countries_language", getJavaBaseCacheConfig(UUID.class, Country.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("currencies", getJavaBaseCacheConfig(SimpleKey.class, Currency.class)
+                .withCache("countries_zones", getJavaBaseCacheConfig(UUID.class, Country.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("currencies_string", getJavaBaseCacheConfig(String.class, Currency.class)
-                        .withDiskStoreThreadPool("twoConcurrentPools", 2)
-                        .withService(writeBehindConfig)
-                        .withService(eventListenerConfig)
-                        .build())
-                .withCache("currencies_uuid", getJavaBaseCacheConfig(UUID.class, Currency.class)
+                .withCache("language", getJavaBaseCacheConfig(SimpleKey.class, Language.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
@@ -126,27 +121,17 @@ public class CacheConfig {
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("languages_string", getJavaBaseCacheConfig(String.class, Language.class)
+                .withCache("zone", getJavaBaseCacheConfig(SimpleKey.class, Zone.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("languages_uuid", getJavaBaseCacheConfig(UUID.class, Language.class)
+                .withCache("zones", getJavaBaseCacheConfig(String.class, Zone.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)
                         .build())
-                .withCache("zones", getJavaBaseCacheConfig(SimpleKey.class, Zone.class)
-                        .withDiskStoreThreadPool("twoConcurrentPools", 2)
-                        .withService(writeBehindConfig)
-                        .withService(eventListenerConfig)
-                        .build())
-                .withCache("zones_string", getJavaBaseCacheConfig(String.class, Zone.class)
-                        .withDiskStoreThreadPool("twoConcurrentPools", 2)
-                        .withService(writeBehindConfig)
-                        .withService(eventListenerConfig)
-                        .build())
-                .withCache("zones_uuid", getJavaBaseCacheConfig(UUID.class, Zone.class)
+                .withCache("zones_language", getJavaBaseCacheConfig(UUID.class, Zone.class)
                         .withDiskStoreThreadPool("twoConcurrentPools", 2)
                         .withService(writeBehindConfig)
                         .withService(eventListenerConfig)

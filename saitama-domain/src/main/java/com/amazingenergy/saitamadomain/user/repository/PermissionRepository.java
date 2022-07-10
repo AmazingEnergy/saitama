@@ -5,6 +5,7 @@ import com.amazingenergy.saitamadomain.user.domain.Group;
 import com.amazingenergy.saitamadomain.user.domain.Permission;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PermissionRepository extends EntityRepository<UUID, Permission> {
@@ -12,7 +13,7 @@ public interface PermissionRepository extends EntityRepository<UUID, Permission>
 
     List<Permission> listPermission();
 
-    Permission getById(Integer permissionId);
+    Optional<Permission> getById(UUID permissionId);
 
     List<Permission> getPermissions(List<Integer> groupIds);
 

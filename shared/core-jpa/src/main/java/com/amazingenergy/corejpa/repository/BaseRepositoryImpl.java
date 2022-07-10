@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public abstract class BaseRepositoryImpl<K extends Serializable & Comparable<K>,
     }
 
     @Override
-    public Iterable<E> saveAll(Iterable<E> entities) {
+    public List<E> saveAll(Iterable<E> entities) {
         var mappedEntities = Streams.stream(entities).map(this::to).collect(Collectors.toList());
         var savedEntities = jpaRepository.saveAll(mappedEntities);
         return savedEntities.stream().map(this::from).collect(Collectors.toList());
@@ -61,7 +62,7 @@ public abstract class BaseRepositoryImpl<K extends Serializable & Comparable<K>,
     }
 
     @Override
-    public Iterable<E> findAll() {
+    public List<E> findAll() {
         return jpaRepository.findAll().stream().map(this::from).collect(Collectors.toList());
     }
 

@@ -5,5 +5,5 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 @Configuration("core-config")
-public class BeanConfig {
+public class CoreBeanConfig {
 }
