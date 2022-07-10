@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    generate-unique-name: false
+    name: saitama
+#    url: jdbc:postgresql://localhost:5432/saitamadb
+#    username: sa
+#    password: P@ssoword1
+  h2:
+    console:
+      enabled: true
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  sql:
+    init:
+      mode: always

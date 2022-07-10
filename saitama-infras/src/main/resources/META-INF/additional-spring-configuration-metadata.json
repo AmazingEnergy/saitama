@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "my.cache.persistence.directory",
+      "type": "java.lang.String",
+      "description": "Description for my.cache.persistence.directory."
+  }
+] }

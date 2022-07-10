@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+
+    <groupId>com.amazingengery</groupId>
+    <artifactId>saitama</artifactId>
+    <version>0.0.1</version>
+
+    <name>saitama</name>
+    <description>saitama</description>
+    <url>https://github.com/AmazingEnergy/saitama</url>
+
+    <properties>
+        <project.version>0.0.1</project.version>
+        <mapstruct.version>1.5.0.Beta2</mapstruct.version>
+        <lombok.version>1.18.22</lombok.version>
+
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.boot.version>2.6.2</spring.boot.version>
+        <jib.version>3.1.4</jib.version>
+
+        <image.registry.account.id>docker.io/luuductrung1234</image.registry.account.id>
+        <image.name>saitama</image.name>
+        <image.tag/> <!-- this property will be imputed later in commandline -D -->
+        <image.dependency.jdk>
+            adoptopenjdk:11-jre@sha256:ad6431b2e2a6f8016aa6d79c3f588783af9fdc06cafe131fd0d3faf560914b13
+        </image.dependency.jdk>
+    </properties>
+
+    <modules>
+        <module>saitama-web</module>
+        <module>persistence/saitama-jpa</module>
+        <module>saitama-appservice</module>
+        <module>saitama-domain</module>
+        <module>shared/core</module>
+        <module>saitama-infras</module>
+        <module>shared/core-jpa</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>core-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>saitama-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>saitama-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>saitama-appservice</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazingengery</groupId>
+                <artifactId>saitama-infras</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <!-- lombok dependency should not end up on classpath -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+
+                        <!-- additional annotation processor required as of Lombok >= 1.18.16 -->
+                        <!-- reference: https://mapstruct.org/documentation/dev/reference/html/#lombok -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.1.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <!-- reference: https://mapstruct.org/documentation/dev/reference/html/#configuration-options -->
+                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+                        <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
+                        <arg>-Amapstruct.verbose=true</arg>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                        <arg>-Amapstruct.defaultInjectionStrategy=constructor</arg>
+                        <arg>-Amapstruct.unmappedTargetPolicy=IGNORE</arg>
+                        <arg>-Amapstruct.unmappedSourcePolicy=WARN</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- ======================================================
+        Package project and publish to local daemon
+        ======================================================= -->
+        <profile>
+            <id>push-to-docker</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib.version}</version>
+                        <configuration>
+                            <from>
+                                <image>
+                                    ${image.dependency.jdk}
+                                </image>
+                            </from>
+                            <!--<to>-->
+                            <!--    <image>${image.registry.account.id}/${image.name}:${image.tag}</image>-->
+                            <!--</to>-->
+                            <container>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                                <format>OCI</format>
+                            </container>
+                        </configuration>
+                        <!-- bind to maven lifecycle -->
+                        <executions>
+                            <execution>
+                                <id>publish-current-tag</id>
+                                <goals>
+                                    <goal>dockerBuild</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>${image.name}:${image.tag}</image>
+                                    </to>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>publish-latest-tag</id>
+                                <goals>
+                                    <goal>dockerBuild</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>${image.name}:latest</image>
+                                    </to>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- ======================================================
+        Package project and publish to image Registry
+        ======================================================= -->
+        <profile>
+            <id>push-to-registry</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib.version}</version>
+                        <configuration>
+                            <from>
+                                <image>
+                                    ${image.dependency.jdk}
+                                </image>
+                            </from>
+                            <!--<to>-->
+                            <!--    <image>${image.registry.account.id}/${image.name}:${image.tag}</image>-->
+                            <!--</to>-->
+                            <container>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                                <format>OCI</format>
+                            </container>
+                        </configuration>
+                        <!-- bind to maven lifecycle -->
+                        <executions>
+                            <execution>
+                                <id>publish-current-tag</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>${image.registry.account.id}/${image.name}:${image.tag}</image>
+                                    </to>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>publish-latest-tag</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>${image.registry.account.id}/${image.name}:latest</image>
+                                    </to>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
